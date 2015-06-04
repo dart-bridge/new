@@ -1,0 +1,7 @@
+name: new_bridge
+version: 0.1.1
+description: Convenient installer for Bridge apps
+author: Emil Persson <emil.n.persson@gmail.com>
+homepage: http://github.com/dart-bridge/new
+executables:
+  new_bridge: new_bridge
