@@ -88,9 +88,9 @@ main(List<String> arguments) async {
   }
 
   try {
-    await new File('.env.development').rename('.env');
+    await new File('.env.development').copy('.env');
   } catch (e) {
-    output('••• Couldn\'t rename .env.production\n', Color.yellow);
+    output('••• Couldn\'t copy .env.development to .env\n', Color.yellow);
   }
 
   output('We\'re in business!\n', Color.blue);
