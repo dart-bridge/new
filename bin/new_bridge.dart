@@ -36,10 +36,15 @@ void _endProgress() {
   stdout.write('\n');
 }
 
-main(List<String> arguments) async {
+main(List<String> args) async {
+  var arguments = args.toList();
+
+  bool usePlain = arguments.contains('--plain');
+
+  if (usePlain) arguments.remove('--plain');
 
   if (arguments.length != 1) {
-    output('Usage: new-bridge <folder-name>\n', Color.red);
+    output('Usage: new_bridge <project_name> [--plain]\n', Color.red);
     exit(1);
   }
 
@@ -49,7 +54,7 @@ main(List<String> arguments) async {
 
   var result = await Process.run('git', [
     'clone',
-    'git://github.com/dart-bridge/bridge',
+    'git://github.com/dart-bridge/bridge${usePlain ? '_plain' : ''}',
     name,
   ]);
 
@@ -94,5 +99,5 @@ main(List<String> arguments) async {
   }
 
   output('We\'re in business!\n', Color.blue);
-  output('Hint: cd $name && dart bridge start\n', Color.gray);
+  output('Hint: cd $name && dart bridge\n', Color.gray);
 }
