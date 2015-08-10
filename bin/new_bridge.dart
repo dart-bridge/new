@@ -36,27 +36,39 @@ void _endProgress() {
   stdout.write('\n');
 }
 
+bool _flag(String argument) {
+  bool exists = arguments.contains(argument);
+  if (exists) arguments.remove(argument);
+  return exists;
+}
+
+List<String> arguments;
+
 main(List<String> args) async {
-  var arguments = args.toList();
+  arguments = args.toList();
 
-  bool usePlain = arguments.contains('--plain');
+  bool usePlain = _flag('--plain');
+  if (usePlain) output('••• Cloning plain package!\n', Color.yellow);
 
-  if (usePlain) arguments.remove('--plain');
+  bool useDev = _flag('--dev');
+  if (useDev) output('••• Cloning development branch!\n', Color.yellow);
 
   if (arguments.length != 1) {
-    output('Usage: new_bridge <project_name> [--plain]\n', Color.red);
+    output('Usage: new_bridge <project_name> [--plain][--dev]\n', Color.red);
     exit(1);
   }
 
   var name = arguments[0];
 
-  output('Creating $name...\n', Color.blue);
-
-  var result = await Process.run('git', [
+  var gitArguments = [
     'clone',
-    'git://github.com/dart-bridge/bridge${usePlain ? '_plain' : ''}',
+    '-b${useDev ? 'develop' : 'master'}',
+    '--single-branch',
+    'https://github.com/dart-bridge/bridge${usePlain ? '_plain' : ''}',
     name,
-  ]);
+  ];
+  var result = await Process.run('git', gitArguments);
+
 
   if (result.exitCode != 0) {
     output('${result.stderr}\n', Color.red);
@@ -72,7 +84,7 @@ main(List<String> args) async {
     exit(1);
   }
 
-  output('Getting dependencies', Color.blue);
+  output('Creating $name', Color.blue);
 
   _progress();
 
@@ -99,5 +111,5 @@ main(List<String> args) async {
   }
 
   output('We\'re in business!\n', Color.blue);
-  output('Hint: cd $name && dart bridge\n', Color.gray);
+  output('Hint: cd $name && dart bridge${!usePlain ? ' start, watch' : ''}\n', Color.gray);
 }
