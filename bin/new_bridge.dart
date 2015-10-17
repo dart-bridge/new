@@ -20,6 +20,8 @@ String _colorize(String input, Color color) {
 }
 
 void output(String input, Color color) {
+  if (Platform.isWindows)
+    stdout.write(input);
   stdout.write(_colorize(input, color));
 }
 
